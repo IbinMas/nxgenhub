@@ -1,4 +1,4 @@
-// Email service for handling form submissions via SMTP
+// Email service for handling form submissions via backend API
 interface EmailData {
   to: string;
   subject: string;
@@ -13,56 +13,27 @@ interface EmailResponse {
   confirmationSent?: boolean;
 }
 
-// SMTP Configuration using Brevo credentials
-const SMTP_CONFIG = {
-  host: "smtp-relay.brevo.com",
-  port: 587,
-  secure: false, // true for 465, false for other ports
-  auth: {
-    user: "theshoetanfoundation@gmail.com",
-    pass: "",
-  },
-  from: "alfie@shoetanfoundation.com",
-};
-
-const RECIPIENT_EMAIL = "clementlin40@gmail.com";
-
-// Backend server URL - will be configurable for different environments
+// Backend server URL - configurable for different environments
 const getBackendUrl = () => {
-  // For production deployment, use environment variable or current domain
-  if (import.meta.env.PROD) {
-    return (
-      import.meta.env.VITE_BACKEND_URL ||
-      `${window.location.protocol}//${window.location.hostname}:3001`
-    );
-  }
-  // For development
-  return "http://localhost:80";
+  // Use environment variable with fallback to the full backend API URL
+  return import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001/api';
 };
 
 export const sendEmail = async (emailData: EmailData): Promise<boolean> => {
-  console.log("Starting SMTP email send process...", {
+  console.log("Sending email via backend API...", {
     formType: emailData.formType,
     hasFormData: !!emailData.formData,
-    recipientEmail: RECIPIENT_EMAIL,
-    smtpHost: SMTP_CONFIG.host,
   });
 
   try {
     // Prepare email payload for backend API
     const emailPayload = {
-      to: RECIPIENT_EMAIL,
-      from: SMTP_CONFIG.from,
       subject: emailData.subject,
       html: formatEmailBodyHTML(emailData),
       text: formatEmailBody(emailData),
-      replyTo: emailData.formData.email || SMTP_CONFIG.from,
-      smtpConfig: {
-        host: SMTP_CONFIG.host,
-        port: SMTP_CONFIG.port,
-        secure: SMTP_CONFIG.secure,
-        auth: SMTP_CONFIG.auth,
-      },
+      replyTo: emailData.formData.email,
+      formType: emailData.formType,
+      formData: emailData.formData,
       // Include user confirmation email data
       sendConfirmation: !!(
         emailData.formData.email && isValidEmail(emailData.formData.email)
@@ -71,7 +42,6 @@ export const sendEmail = async (emailData: EmailData): Promise<boolean> => {
         emailData.formData.email && isValidEmail(emailData.formData.email)
           ? {
               to: emailData.formData.email,
-              from: SMTP_CONFIG.from,
               subject: getConfirmationSubject(emailData.formType),
               html: formatConfirmationEmailHTML(emailData),
               text: formatConfirmationEmailText(emailData),
@@ -79,18 +49,11 @@ export const sendEmail = async (emailData: EmailData): Promise<boolean> => {
           : null,
     };
 
-    console.log("Sending email via backend API...", {
-      to: emailPayload.to,
-      from: emailPayload.from,
-      subject: emailPayload.subject,
-      replyTo: emailPayload.replyTo,
-    });
-
     // Send to backend API endpoint
     const backendUrl = getBackendUrl();
-    console.log("Using backend URL:", `${backendUrl}/api/send-email`);
+    console.log("Using backend URL:", `${backendUrl}/send-email`);
 
-    const response = await fetch(`${backendUrl}/api/send-email`, {
+    const response = await fetch(`${backendUrl}/send-email`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -102,81 +65,23 @@ export const sendEmail = async (emailData: EmailData): Promise<boolean> => {
     console.log("Backend API response:", responseData);
 
     if (response.ok && responseData.success) {
-      console.log("✅ Email sent successfully via SMTP");
+      console.log("✅ Email sent successfully");
       if (responseData.confirmationSent) {
         console.log("✅ Confirmation email sent to user");
       }
       return true;
     } else {
       console.error(
-        "❌ SMTP sending failed:",
+        "❌ Email sending failed:",
         responseData.error || "Unknown error",
       );
-
-      // Try direct SMTP approach as fallback
-      return await sendEmailDirectSMTP(emailData);
+      return false;
     }
   } catch (error: any) {
     console.error("❌ Backend API failed:", {
       message: error.message,
       stack: error.stack,
     });
-
-    // Try direct SMTP approach as fallback
-    return await sendEmailDirectSMTP(emailData);
-  }
-};
-
-// Fallback direct SMTP method using fetch to external service
-const sendEmailDirectSMTP = async (emailData: EmailData): Promise<boolean> => {
-  try {
-    console.log("Attempting direct SMTP via external service...");
-
-    // Use a service like Formspree, Netlify Forms, or similar
-    // For now, we'll simulate the SMTP sending
-    const emailPayload = {
-      to: RECIPIENT_EMAIL,
-      from: SMTP_CONFIG.from,
-      subject: emailData.subject,
-      message: formatEmailBody(emailData),
-      replyTo: emailData.formData.email || SMTP_CONFIG.from,
-      // SMTP credentials for external service
-      smtp: {
-        host: SMTP_CONFIG.host,
-        port: SMTP_CONFIG.port,
-        user: SMTP_CONFIG.auth.user,
-        pass: SMTP_CONFIG.auth.pass,
-      },
-    };
-
-    // Use a webhook service for email sending
-    // You can replace this with your preferred email service
-    const webhookResponse = await fetch("https://formspree.io/f/your-form-id", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify({
-        email: emailData.formData.email,
-        name: emailData.formData.name,
-        company: emailData.formData.company,
-        message: formatEmailBody(emailData),
-        _replyto: emailData.formData.email,
-        _subject: emailData.subject,
-        _to: RECIPIENT_EMAIL,
-      }),
-    });
-
-    if (webhookResponse.ok) {
-      console.log("✅ Email sent via webhook service");
-      return true;
-    } else {
-      console.error("❌ Webhook service failed");
-      return false;
-    }
-  } catch (error: any) {
-    console.error("❌ Direct SMTP fallback failed:", error.message);
     return false;
   }
 };

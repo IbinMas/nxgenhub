@@ -1,225 +1,295 @@
-# NxtgenHub - IT Consulting Website
+# NxGenHub
 
-A modern React application with Node.js backend for IT consulting services, featuring email integration and Docker deployment.
+A modern web application built with React/Vite frontend and Express.js backend, featuring integrated email functionality and Docker deployment support.
+
+## 📁 Project Structure
+
+```
+nxgenhub/
+├── client/                 # React/Vite frontend application
+│   ├── src/
+│   │   ├── components/     # React components
+│   │   ├── services/       # API services and utilities
+│   │   └── ...
+│   ├── .env.development    # Development environment variables
+│   ├── .env.production     # Production environment variables
+│   ├── package.json
+│   └── vite.config.ts
+├── server/                 # Express.js backend application
+│   ├── src/
+│   │   ├── routes/         # API routes
+│   │   └── index.ts        # Server entry point
+│   ├── .env                # Server environment variables
+│   ├── .env.example        # Environment template
+│   └── package.json
+├── docker-compose.yml      # Docker deployment configuration
+└── README.md
+```
 
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Docker and Docker Compose
-- Node.js 18+ (for local development)
-- Git
 
-### 1. Environment Setup
+- Node.js (v16 or higher)
+- npm or yarn
+- Docker and Docker Compose (for containerized deployment)
 
-Create or update your `.env` file with SMTP credentials:
+### Development Setup
 
-```bash
-# SMTP Configuration for Email Service
-SMTP_HOST=smtp-relay.brevo.com
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd nxgenhub
+   ```
+
+2. **Install dependencies**
+   ```bash
+   # Install client dependencies
+   cd client
+   npm install
+
+   # Install server dependencies
+   cd ../server
+   npm install
+   ```
+
+3. **Configure environment variables** (see [Environment Configuration](#environment-configuration))
+
+4. **Start the development servers**
+   ```bash
+   # Terminal 1 - Start the backend server
+   cd server
+   npm run dev
+
+   # Terminal 2 - Start the frontend client
+   cd client
+   npm run dev
+   ```
+
+5. **Access the application**
+   - Frontend: http://localhost:5173
+   - Backend API: http://localhost:3001
+
+## ⚙️ Environment Configuration
+
+### Client Environment Variables
+
+Create the following files in the `client/` directory:
+
+**`.env.development`**
+```env
+VITE_BACKEND_URL=http://localhost:3001
+```
+
+**`.env.production`**
+```env
+VITE_BACKEND_URL=/api
+```
+
+### Server Environment Variables
+
+Create a `.env` file in the `server/` directory based on `.env.example`:
+
+```env
+# Server Configuration
+PORT=3001
+
+# SMTP Configuration
+SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
 SMTP_USER=your-email@gmail.com
-SMTP_PASS=your-smtp-password
-SMTP_FROM=your-from-email@domain.com
+SMTP_PASS=your-app-password
+SMTP_FROM=your-email@gmail.com
 
 # Email Recipients
-RECIPIENT_EMAIL=recipient@example.com
-
-# Server Configuration
-PORT=80
-NODE_ENV=production
+RECIPIENT_EMAIL=contact@yourcompany.com
 
 # CORS Configuration
-CORS_ORIGIN=http://localhost
+CORS_ORIGIN=http://localhost:3000,http://localhost:5173,https://yourdomain.com
 ```
 
-### 2. Docker Deployment (Recommended)
+### SMTP Setup
 
+For Gmail SMTP:
+1. Enable 2-factor authentication on your Google account
+2. Generate an App Password: Google Account → Security → App passwords
+3. Use the generated password in `SMTP_PASS`
+
+## 🏃‍♂️ Running the Application
+
+### Development Mode
+
+**Option 1: Manual Start**
 ```bash
-# Build and start the application
-docker-compose up --build -d
-
-# Check logs
-docker-compose logs -f
-
-# Stop the application
-docker-compose down
-```
-
-### 3. Local Development
-
-```bash
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
-
-# Build for production
-npm run build
-```
-
-## 🏗️ Architecture
-
-### Frontend (React + Vite)
-- Modern React 18 with TypeScript
-- Tailwind CSS for styling
-- Framer Motion for animations
-- React Router for navigation
-- shadcn/ui components
-
-### Backend (Node.js + Express)
-- Express.js server
-- SMTP email handling via Nodemailer
-- CORS enabled
-- Health check endpoints
-
-### Docker Setup
-- Multi-stage build for optimization
-- Frontend served on port 80
-- Backend API on same container
-- Health checks and logging
-- Resource limits for production
-
-## 📧 Email Integration
-
-The application uses Brevo SMTP for email sending:
-
-- **Contact forms**: Automatically send emails to configured recipients
-- **User confirmations**: Send confirmation emails to form submitters
-- **Expert consultations**: Handle consultation requests
-- **Onboarding**: Process new client onboarding
-
-## 🔧 API Endpoints
-
-- `GET /health` - Health check
-- `POST /api/send-email` - Send email via SMTP
-- `POST /send` - Legacy email endpoint
-
-## 🌐 Access Points
-
-- **Frontend**: http://localhost
-- **Health Check**: http://localhost/health
-- **API**: http://localhost/api/send-email
-
-## 🛠️ Development Commands
-
-```bash
-# Frontend development
-npm run dev
-
-# Build frontend
-npm run build
-
-# Backend development (in server directory)
+# Start backend (Terminal 1)
 cd server
 npm run dev
 
-# Build backend
-cd server
-npm run build
+# Start frontend (Terminal 2)
+cd client
+npm run dev
 ```
 
-## 🐳 Docker Commands
+**Option 2: Concurrent Start** (if configured)
+```bash
+# From project root
+npm run dev
+```
+
+### Production Build
 
 ```bash
-# Build and run
-docker-compose up --build
+# Build client
+cd client
+npm run build
 
-# Run in background
-docker-compose up -d
+# Start production server
+cd ../server
+npm start
+```
+
+## 🐳 Docker Deployment
+
+### Using Docker Compose
+
+1. **Configure environment variables**
+   - Ensure server `.env` file is properly configured
+   - Update `docker-compose.yml` with production settings
+
+2. **Build and start containers**
+   ```bash
+   docker-compose up --build
+   ```
+
+3. **Access the application**
+   - Application will be available on the configured port
+   - Internal container communication handled automatically
+
+### Docker Commands
+
+```bash
+# Build and start in detached mode
+docker-compose up -d --build
 
 # View logs
-docker-compose logs -f nxtgenhub-app
+docker-compose logs -f
 
-# Stop services
+# Stop containers
 docker-compose down
 
-# Rebuild without cache
-docker-compose build --no-cache
+# Rebuild specific service
+docker-compose up --build client
+docker-compose up --build server
 ```
 
-## 🔍 Troubleshooting
+## 📡 API Endpoints
+
+### Email API
+
+**POST** `/api/send-email`
+
+Send email through the contact form system.
+
+**Request Body:**
+```json
+{
+  "formType": "contact|expert|getstarted",
+  "name": "John Doe",
+  "email": "john@example.com",
+  "message": "Your message here",
+  "company": "Company Name (optional)",
+  "phone": "Phone Number (optional)"
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Email sent successfully"
+}
+```
+
+**Error Response:**
+```json
+{
+  "success": false,
+  "message": "Error message"
+}
+```
+
+## 🔧 Development Features
+
+### Vite Proxy Configuration
+
+The Vite development server is configured to proxy API requests:
+- Client requests to `/api/*` are forwarded to `http://localhost:3001/api/*`
+- This eliminates CORS issues during development
+- Configured in `client/vite.config.ts`
+
+### Hot Reload
+
+- Frontend: Automatic reload on file changes
+- Backend: Automatic restart with nodemon (if configured)
+
+## 🛠️ Troubleshooting
 
 ### Common Issues
 
-1. **Port 80 Permission Issues**
-   ```bash
-   # Use different port
-   # Edit docker-compose.yml: "8080:80"
-   # Access via http://localhost:8080
-   ```
+**1. CORS Errors**
+- Ensure `CORS_ORIGIN` in server `.env` includes your client URL
+- Check that the client is making requests to the correct backend URL
 
-2. **SMTP Connection Issues**
-   - Verify SMTP credentials in `.env`
-   - Check Brevo service status
-   - Test with curl: `curl -X POST http://localhost/health`
+**2. Email Not Sending**
+- Verify SMTP credentials in server `.env`
+- Check that Gmail App Password is correctly configured
+- Ensure SMTP_HOST and SMTP_PORT are correct for your provider
 
-3. **Docker Build Failures**
-   ```bash
-   # Clean build
-   docker-compose down
-   docker system prune -f
-   docker-compose up --build --no-cache
-   ```
+**3. Client Can't Connect to Server**
+- Verify server is running on port 3001
+- Check `VITE_BACKEND_URL` in client environment files
+- Ensure Vite proxy configuration is correct
 
-4. **Environment Variables Not Loading**
-   - Ensure `.env` file exists in root directory
-   - Check file permissions
-   - Verify docker-compose.yml has `env_file: - .env`
+**4. Docker Issues**
+- Ensure Docker daemon is running
+- Check that ports are not already in use
+- Verify environment variables are properly set in containers
 
-### Logs and Monitoring
+**5. Build Failures**
+- Clear node_modules and reinstall dependencies
+- Check for version compatibility issues
+- Ensure all environment variables are set
+
+### Debug Commands
 
 ```bash
-# Application logs
-docker-compose logs nxtgenhub-app
+# Check if ports are in use
+lsof -i :3001
+lsof -i :5173
 
-# Follow logs in real-time
-docker-compose logs -f
+# View Docker container logs
+docker-compose logs client
+docker-compose logs server
 
-# Container status
-docker-compose ps
-
-# Resource usage
-docker stats nxtgenhub-app
+# Test API endpoint
+curl -X POST http://localhost:3001/api/send-email \
+  -H "Content-Type: application/json" \
+  -d '{"formType":"contact","name":"Test","email":"test@example.com","message":"Test message"}'
 ```
 
-## 🚀 Production Deployment
+## 📝 Scripts
 
-### Security Considerations
-1. Use HTTPS with reverse proxy (nginx)
-2. Set strong SMTP passwords
-3. Configure firewall rules
-4. Regular security updates
-5. Monitor logs and metrics
+### Client Scripts
+```bash
+npm run dev          # Start development server
+npm run build        # Build for production
+npm run preview      # Preview production build
+npm run lint         # Run ESLint
+```
 
-### Performance Optimization
-1. Enable gzip compression
-2. Use CDN for static assets
-3. Implement caching strategies
-4. Monitor resource usage
-5. Scale horizontally if needed
-
-## 📝 Features
-
-- ✅ Responsive design
-- ✅ Contact forms with email integration
-- ✅ Expert consultation requests
-- ✅ Client onboarding process
-- ✅ Blog functionality
-- ✅ Service showcase
-- ✅ Docker containerization
-- ✅ Health monitoring
-- ✅ SMTP email delivery
-- ✅ User confirmation emails
-
-## 🤝 Support
-
-For issues or questions:
-1. Check application logs: `docker-compose logs -f`
-2. Verify environment configuration
-3. Test email functionality via health endpoints
-4. Review Docker container status
-
-## 📄 License
-
-© 2024 NxtgenHub. All rights reserved.
+### Server Scripts
+```bash
+npm run dev          # Start development server with nodemon
+npm start            # Start production server
+npm run build        # Build TypeScript (if applicable)
+```
