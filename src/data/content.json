@@ -1,0 +1,160 @@
+{
+  "hero": {
+    "title": "Simplify IT. Empower Growth",
+    "subtitle": "Tailored IT consulting to optimize, innovate, and scale your business",
+    "ctaText": "Talk to an expert",
+    "image": "https://images.unsplash.com/photo-1667372393119-3d4c48d07fc9?w=1200&q=90",
+    "imageAlt": "DevOps CI/CD pipeline dashboard"
+  },
+  "about": {
+    "title": "Contact Our Friendly Team",
+    "subtitle": "Let us know how we can help.",
+    "contacts": [
+      {
+        "title": "Email Support",
+        "description": "Reach our technical team",
+        "link": "mailto:support@company.com",
+        "linkText": "support@company.com",
+        "icon": "mail"
+      },
+      {
+        "title": "Get a Quote",
+        "description": "Request project estimates",
+        "link": "mailto:quotes@company.com",
+        "linkText": "quotes@company.com",
+        "icon": "fileText"
+      },
+      {
+        "title": "LinkedIn",
+        "description": "Connect professionally",
+        "link": "https://linkedin.com/company",
+        "linkText": "linkedin.com/company",
+        "icon": "linkedin"
+      },
+      {
+        "title": "Twitter/X",
+        "description": "See our latest updates",
+        "link": "https://twitter.com/company",
+        "linkText": "twitter.com/company",
+        "icon": "twitter"
+      }
+    ]
+  },
+  "services": [
+    {
+      "title": "Cloud Integration & Migration",
+      "description": "Seamlessly migrate your infrastructure to the cloud with our expert guidance, ensuring minimal downtime and maximum efficiency.",
+      "icon": "monitor",
+      "slug": "cloud-integration-and-migration"
+    },
+    {
+      "title": "CI/CD Implementation & Pipeline Automation",
+      "description": "Streamline your development process with automated CI/CD pipelines that accelerate deployment and improve code quality.",
+      "icon": "trendingUp",
+      "slug": "cicd-implementation-and-pipeline-automation"
+    },
+    {
+      "title": "Azure DevOps Consulting",
+      "description": "Leverage Microsoft Azure's powerful DevOps tools to optimize your development lifecycle and enhance team collaboration.",
+      "icon": "edit3",
+      "slug": "azure-devops-consulting"
+    },
+    {
+      "title": "AWS DevOps Consulting",
+      "description": "Harness the full potential of Amazon Web Services with our comprehensive DevOps consulting and implementation services.",
+      "icon": "layers",
+      "slug": "aws-devops-consulting"
+    },
+    {
+      "title": "Managed Cloud Services & Support",
+      "description": "Focus on your core business while we manage your cloud infrastructure with 24/7 monitoring and proactive support.",
+      "icon": "globe",
+      "slug": "managed-cloud-services-and-support"
+    },
+    {
+      "title": "Performance & Cost Optimization",
+      "description": "Maximize your cloud ROI through intelligent resource optimization and performance tuning strategies.",
+      "icon": "settings",
+      "slug": "performance-and-cost-optimization"
+    }
+  ],
+  "blog": [
+    {
+      "title": "Infrastructure as Code: Best Practices",
+      "excerpt": "Learn how Infrastructure as Code (IaC) can revolutionize your IT operations. Discover tools like Terraform and Ansible to automate your infrastructure deployment and management.",
+      "date": "12/15/24",
+      "author": "DevOps Team",
+      "image": "https://images.unsplash.com/photo-1667372393119-3d4c48d07fc9?w=800&q=80",
+      "readTime": "7 min read"
+    },
+    {
+      "title": "Modern DevOps Practices",
+      "excerpt": "Discover the latest trends in DevOps automation and how they can transform your development workflow. Learn about CI/CD pipelines, containerization, and cloud-native solutions.",
+      "date": "12/10/24",
+      "author": "Tech Team",
+      "image": "https://images.unsplash.com/photo-1518432031352-d6fc5c10da5a?w=800&q=80",
+      "readTime": "8 min read"
+    },
+    {
+      "title": "Cloud Migration Strategies",
+      "excerpt": "A comprehensive guide to migrating your infrastructure to the cloud. Best practices, common pitfalls, and how to ensure a smooth transition for your business.",
+      "date": "12/05/24",
+      "author": "Cloud Team",
+      "image": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&q=80",
+      "readTime": "12 min read"
+    },
+    {
+      "title": "Automation in Software Development",
+      "excerpt": "How automation is revolutionizing software development processes. From testing to deployment, learn how to streamline your development lifecycle.",
+      "date": "11/30/24",
+      "author": "Dev Team",
+      "image": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&q=80",
+      "readTime": "6 min read"
+    },
+    {
+      "title": "Security Best Practices for DevOps",
+      "excerpt": "Implementing security throughout your DevOps pipeline. Learn about DevSecOps practices and how to build security into every stage of development.",
+      "date": "11/25/24",
+      "author": "Security Team",
+      "image": "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=800&q=80",
+      "readTime": "10 min read"
+    },
+    {
+      "title": "The Future of Cloud Computing",
+      "excerpt": "Exploring emerging trends in cloud technology and what they mean for businesses. From edge computing to serverless architectures.",
+      "date": "11/20/24",
+      "author": "Innovation Team",
+      "image": "https://images.unsplash.com/photo-1563986768609-322da13575f3?w=800&q=80",
+      "readTime": "7 min read"
+    },
+    {
+      "title": "Kubernetes Best Practices",
+      "excerpt": "Master container orchestration with Kubernetes. Learn about deployment strategies, scaling, and monitoring in production environments.",
+      "date": "11/15/24",
+      "author": "Platform Team",
+      "image": "https://images.unsplash.com/photo-1667372393119-3d4c48d07fc9?w=800&q=80",
+      "readTime": "9 min read"
+    },
+    {
+      "title": "Microservices Architecture Guide",
+      "excerpt": "Design and implement scalable microservices architectures. Best practices for service communication, data management, and deployment.",
+      "date": "11/10/24",
+      "author": "Architecture Team",
+      "image": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&q=80",
+      "readTime": "11 min read"
+    },
+    {
+      "title": "Monitoring and Observability",
+      "excerpt": "Implement comprehensive monitoring solutions for your applications. Learn about metrics, logging, and distributed tracing.",
+      "date": "11/05/24",
+      "author": "SRE Team",
+      "image": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80",
+      "readTime": "8 min read"
+    }
+  ],
+  "company": {
+    "name": "NxtgenHub",
+    "tagline": "Simplify IT. Empower Growth",
+    "description": "Tailored IT consulting to optimize, innovate, and scale your business"
+  }
+}
