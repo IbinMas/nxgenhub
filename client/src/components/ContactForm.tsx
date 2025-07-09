@@ -5,11 +5,14 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
 import { Label } from "./ui/label";
+import { sendEmail } from "../services/emailService";
 
 interface FormData {
   name: string;
   email: string;
   message: string;
+  company?: string;
+  phone?: string;
 }
 
 interface ContactFormProps {
@@ -84,37 +87,22 @@ const ContactForm = ({ className = "" }: ContactFormProps) => {
         hasMessage: !!formData.message,
       });
 
-      // Send POST request to backend
-      const response = await fetch("http://localhost:80/send", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      // Use emailService to send email
+      const success = await sendEmail({
+        to: "", // Will be handled by backend
+        subject: `New Contact Form Message from ${formData.name}`,
+        body: formData.message,
+        formType: "expert",
+        formData: {
+          name: formData.name,
+          email: formData.email,
+          message: formData.message,
+          company: "", // ContactForm doesn't have company field, but emailService expects it
+          phone: "", // ContactForm doesn't have phone field, but emailService expects it
         },
-        body: JSON.stringify({
-          to: "recipient@example.com", // This will be handled by backend
-          subject: `New Contact Form Message from ${formData.name}`,
-          html: `
-            <h2>New Contact Form Submission</h2>
-            <p><strong>Name:</strong> ${formData.name}</p>
-            <p><strong>Email:</strong> ${formData.email}</p>
-            <p><strong>Message:</strong></p>
-            <p>${formData.message.replace(/\n/g, "<br>")}</p>
-          `,
-          text: `
-            New Contact Form Submission
-            
-            Name: ${formData.name}
-            Email: ${formData.email}
-            Message: ${formData.message}
-          `,
-          replyTo: formData.email,
-        }),
       });
 
-      const result = await response.json();
-      console.log("Server response:", result);
-
-      if (response.ok && result.success) {
+      if (success) {
         setSubmitStatus("success");
         setStatusMessage(
           "Thank you! Your message has been sent successfully. We'll get back to you soon.",
@@ -124,7 +112,7 @@ const ContactForm = ({ className = "" }: ContactFormProps) => {
       } else {
         setSubmitStatus("error");
         setStatusMessage(
-          result.error || "Failed to send message. Please try again later.",
+          "Failed to send message. Please try again later.",
         );
       }
     } catch (error: any) {

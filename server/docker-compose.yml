@@ -1,12 +1,26 @@
 services:
-  nxtgenhub-app:
-#    build:
-#      context: .
-#      dockerfile: Dockerfile
-    image: app:latest
-    container_name: nxtgenhub-app
+  nxtgenhub-client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: nxtgenhub-client
     ports:
-      - "${APP_PORT}:3000"  # 👈 use APP_PORT from .env (host:container)
+      - "${APP_PORT}:3000"
+    environment:
+      - VITE_BACKEND_URL=http://nxtgenhub-server:3001
+    env_file:
+      - .env
+    restart: unless-stopped
+    networks:
+      - nxtgenhub-network
+
+  nxtgenhub-server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: nxtgenhub-server
+    ports:
+      - "${SERVER_PORT}:3001"
     env_file:
       - .env
     restart: unless-stopped
@@ -16,7 +30,7 @@ services:
     networks:
       - nxtgenhub-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -35,6 +49,8 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
       - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    ports:
+      - "5432:5432"
     networks:
       - nxtgenhub-network
     healthcheck:

@@ -20,6 +20,12 @@ export default defineConfig({
     host: "0.0.0.0",
     // @ts-ignore
     allowedHosts: true,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3001',
+        changeOrigin: true,
+      },
+    },
   },
   build: {
     outDir: "dist", // 👈 ensure output goes to /app/dist for Docker
