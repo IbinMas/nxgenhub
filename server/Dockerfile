@@ -2,34 +2,33 @@
 FROM node:18-slim AS backend-builder
 
 WORKDIR /app
+ENV SKIP_POSTINSTALL=true
 
-# Copy backend package files
+# Copy package files and install all dependencies
 COPY package*.json ./
+RUN npm install
 
-# Install backend production dependencies
-RUN npm install --omit=dev
-
-# Install necessary type definitions for TypeScript
-RUN npm install --save-dev \
-    @types/node \
-    @types/express \
-    @types/cors \
-    @types/nodemailer \
-    @types/pg
-
-# Install TypeScript globally
-RUN npm install -g typescript
-
-# Copy backend source code
+# Copy all source files
 COPY . .
+
+# Copy Prisma schema
+COPY prisma ./prisma
+
+# Copy env file if needed before prisma generate
+COPY .env .env
+
+# Generate Prisma client
+RUN npx prisma generate
 
 # Compile TypeScript
 RUN npm run build
 
-# Stage 2: Production runtime for server
+# Prune dev dependencies
+RUN npm prune --production
+
+# Stage 2: Production runtime
 FROM node:18-slim AS production
 
-# Install base utilities
 RUN apt-get update && apt-get install -y dumb-init curl && rm -rf /var/lib/apt/lists/*
 
 # Create non-root user
@@ -37,22 +36,20 @@ RUN groupadd -g 1001 nodejs && useradd -u 1001 -g nodejs -m nextjs
 
 WORKDIR /app
 
-# Copy built backend
+# Copy artifacts from builder
 COPY --from=backend-builder --chown=nextjs:nodejs /app/dist ./dist
 COPY --from=backend-builder --chown=nextjs:nodejs /app/node_modules ./node_modules
-COPY --chown=nextjs:nodejs package.json ./package.json
+COPY --from=backend-builder --chown=nextjs:nodejs /app/package.json ./package.json
 
-# Copy environment file
+# Copy env file (optional if Compose handles it)
 COPY --chown=nextjs:nodejs .env ./
 
-# Set environment variables
 ENV PORT=3001
 
 # Startup script
 RUN echo '#!/bin/sh' > /app/start.sh && \
     echo 'PORT=${PORT:-3001}' >> /app/start.sh && \
     echo 'echo "🚀 Starting NxtgenHub Server..."' >> /app/start.sh && \
-    echo 'echo "📁 Backend files: $(ls -la /app/dist 2>/dev/null | wc -l) files"' >> /app/start.sh && \
     echo 'cd /app && PORT=$PORT node dist/index.js' >> /app/start.sh && \
     chmod +x /app/start.sh
 

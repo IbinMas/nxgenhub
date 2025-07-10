@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import nodemailer from 'nodemailer';
 import { createTransporter } from '../utils/emailUtils.js';
-
+import "dotenv"
 interface EmailRequest {
   to: string;
   subject: string;
@@ -38,7 +38,7 @@ export const sendMailHandler = async (req: Request, res: Response) => {
   try {
     const emailData = req.body as EmailRequest;
 
-    if (!emailData.to || !emailData.subject || (!emailData.html && !emailData.text)) {
+    if (!emailData.subject || (!emailData.html && !emailData.text)) {
       res.status(400).json({ success: false, error: "Missing required fields" });
       return;
     }
@@ -49,7 +49,7 @@ export const sendMailHandler = async (req: Request, res: Response) => {
 
     const mailOptions = {
       from: process.env.SMTP_FROM as string,
-      to: emailData.to,
+      to: process.env.RECIPIENT_EMAIL,
       subject: emailData.subject,
       text: emailData.text,
       html: emailData.html,

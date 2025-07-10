@@ -42,18 +42,26 @@ const corsOrigins = process.env.CORS_ORIGIN
   : [
       "http://localhost:3000",
       "http://localhost:5173",
-      "https://dazzling-kilby2-wfuur.view-2.tempo-dev.app",
+      "https://dazzling-kilby2-wfu...tempo-dev.app",
     ];
+
 
 console.log("🌐 CORS Origins:", corsOrigins);
 
+// const corsOptions = {
+//   origin: corsOrigins,
+//   credentials: true,
+//   optionsSuccessStatus: 200,
+// };
+
+// app.use(cors(corsOptions));
 const corsOptions = {
-  origin: corsOrigins,
+  origin: "*",
   credentials: true,
   optionsSuccessStatus: 200,
 };
-
 app.use(cors(corsOptions));
+
 app.use(express.json());
 
 // Routes

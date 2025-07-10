@@ -10,7 +10,8 @@
     "lint": "eslint . --ext ts",
     "prisma:migrate": "dotenv -e .env -- npx prisma migrate dev --name init",
     "prisma:generate": "dotenv -e .env -- npx prisma generate",
-    "postinstall": "npm run prisma:generate"
+    "postinstall": "[ \"$SKIP_POSTINSTALL\" = \"true\" ] || npm run prisma:generate"
+
   },
   "dependencies": {
     "@prisma/client": "^5.16.1",
